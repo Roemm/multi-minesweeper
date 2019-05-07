@@ -184,7 +184,6 @@ $(function() {
             var text = document.getElementById(player.username);
             text.innerHTML = player.username + ": " +player.score;
           }
-          // console.log("here" + players);
           if(mineGame.win()){
             $gamePage.fadeOut();
             $winPage.show();
@@ -192,11 +191,7 @@ $(function() {
             var scores = arr.sort(function(a, b){
               return b.score - a.score;
             });
-            // console.log(scores);
             $('#finish').text( 'Game over! ' + scores[0].username+' won!' );
-            // console.log(normal);
-            // var winner = players[i].username;
-            // console.log(winner);
           }
         })
 
