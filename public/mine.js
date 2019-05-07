@@ -6,6 +6,12 @@ function make2DArray(cols, rows) {
     return arr;
 }
 
+var grid;
+var cols;
+var rows;
+var w = 20;
+
+
 function Mine(cols, rows, mines, minesIndex){
     this.cols = cols;
     this.rows = rows;
@@ -36,21 +42,22 @@ function Mine(cols, rows, mines, minesIndex){
   
 //check for win here
 //need further development 
-// Mine.prototype.win = function () {
-//   var normal = 0;
-//     for (var i = 0; i < this.cols; i++) {
-//       for (var j = 0; j < this.rows; j++) {
-//         if(!grid[i][j].mine){
-//           if (grid[i][j].revealed){
-//             normal ++;
-//           }
-//         }
-//       }
-//     }
-//   if (normal == this.cols*this.rows - this.mines){
-//     return true;
-//   }
-// }
+Mine.prototype.win = function () {
+  var normal = 0;
+    for (var i = 0; i < this.cols; i++) {
+      for (var j = 0; j < this.rows; j++) {
+        if(!grid[i][j].mine){
+          if (grid[i][j].revealed){
+            normal ++;
+          }
+        }
+      }
+    }
+    console.log(normal);
+  if (normal == this.cols*this.rows - this.mines){
+    return true;
+  }
+}
   
 //function for click event
 Mine.prototype.leftMouse = function(mouseX, mouseY) {
@@ -58,18 +65,36 @@ Mine.prototype.leftMouse = function(mouseX, mouseY) {
     for (var j = 0; j < this.rows; j++) {
       if (grid[i][j].contains(mouseX, mouseY)) {
         if(!grid[i][j].revealed){
-          console.log(grid[i][j].revealed)
+          grid[i][j].reveal();
           if (grid[i][j].mine) {
-            // this.gameOver();
-            currentScore = -3;
+            currentScore = -4;
           }else{
             currentScore = 1;
           }
         }else{
           currentScore = 0;
         }
-        grid[i][j].reveal();
-        console.log("now" +grid[i][j].revealed)
+      }
+    }
+  }
+}
+
+Mine.prototype.rightMouse = function(mouseX, mouseY) {
+  for (var i = 0; i < this.cols; i++) {
+    for (var j = 0; j < this.rows; j++) {
+      if (grid[i][j].contains(mouseX, mouseY)) {
+        if(!grid[i][j].revealed){
+          if (grid[i][j].mine) {
+            if(!grid[i][j].flagged){
+              currentScore = 4;
+            }
+            grid[i][j].flagged = true;
+          } else{
+            grid[i][j].revealed = true;
+            currentScore = -2;
+          }
+        }
+          
       }
     }
   }

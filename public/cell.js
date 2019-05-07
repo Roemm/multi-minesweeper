@@ -5,33 +5,31 @@ function Cell(i, j, w) {
     this.y = j * w;
     this.w = w;
     this.neighborCount = 0;
-
-    // this.cols = cols;
-    // this.rows = rows;
   
     this.mine = false;
     this.revealed = false;
+    this.flagged = false;
   }
   
-  Cell.prototype.show = function() {
-    stroke(0);
-    noFill();
-    rect(this.x, this.y, this.w, this.w);
-    if (this.revealed) {
-      if (this.mine) {
-        fill(127);
-        ellipse(this.x + this.w * 0.5, this.y + this.w * 0.5, this.w * 0.5);
-      } else {
-        fill(200);
-        rect(this.x, this.y, this.w, this.w);
-        if (this.neighborCount > 0) {
-          textAlign(CENTER);
-          fill(0);
-          text(this.neighborCount, this.x + this.w * 0.5, this.y + this.w - 6);
-        }
-      }
-    }
-  }
+  // Cell.prototype.show = function() {
+  //   stroke(0);
+  //   noFill();
+  //   rect(this.x, this.y, this.w, this.w);
+  //   if (this.revealed) {
+  //     if (this.mine) {
+  //       fill(127);
+  //       ellipse(this.x + this.w * 0.5, this.y + this.w * 0.5, this.w * 0.5);
+  //     } else {
+  //       fill(200);
+  //       rect(this.x, this.y, this.w, this.w);
+  //       if (this.neighborCount > 0) {
+  //         textAlign(CENTER);
+  //         fill(0);
+  //         text(this.neighborCount, this.x + this.w * 0.5, this.y + this.w - 6);
+  //       }
+  //     }
+  //   }
+  // }
   
   Cell.prototype.countMines = function() {
     if (this.mine) {
@@ -63,7 +61,6 @@ function Cell(i, j, w) {
   Cell.prototype.reveal = function() {
     this.revealed = true;
     if (this.neighborCount == 0) {
-      // flood fill time
       this.floodFill();
     }
   }
@@ -78,8 +75,6 @@ function Cell(i, j, w) {
         if (j < 0 || j >= rows) continue;
   
         var neighbor =grid[i][j];
-        // Note the neighbor.mine check was not required.
-        // See issue #184
         if (!neighbor.revealed) {
           neighbor.reveal();
         }

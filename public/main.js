@@ -13,13 +13,26 @@ $(function() {
     // Initialize variables
     var $window = $(window);
     var $usernameInput = $('.usernameInput'); // Input for username
-    var $inputMessage = $('.inputMessage'); // Input message input box
+    var $usericonInput = $('.usericonInput')
+    var $submit = $('.userinfo'); // Input message input box
 
     var $loginPage = $('.login.page'); // The login page
     var $gamePage = $('.game.page'); // The chatroom page
-
+    var $winPage = $('.win.page');
     var username;
-    var $currentInput = $usernameInput.focus();
+    var usericon;
+    
+    var bomb = document.createElement("IMG");
+    bomb.alt = "bomb";
+    bomb.setAttribute('class', 'bomb');
+    bomb.src="/images/mine.png";
+    console.log(bomb);
+
+    var flag = document.createElement("IMG");
+    flag.alt = "flag";
+    flag.setAttribute('class', 'flag');
+    flag.src="/images/flag.png";
+    console.log(flag);
 
     //Initialize canvas and grid
     var canvas = document.getElementById("canvas");
@@ -29,28 +42,37 @@ $(function() {
     Cell.prototype.show = function() {
       ctx.beginPath();
       ctx.rect(this.x, this.y, this.w, this.w);
-      ctx.strokeStyle = 'black';
+      ctx.strokeStyle = 'white';
       ctx.stroke();
       ctx.closePath;
       if (this.revealed) {
         if (this.mine) {
-          ctx.beginPath();
-          ctx.rect(this.x, this.y, this.w, this.w);
-          ctx.fillStyle = 'red';
-          ctx.fill();
-          ctx.closePath();
+          ctx.drawImage(bomb, this.x, this.y,this.w, this.w);
+          // ctx.beginPath();
+          // ctx.rect(this.x, this.y, this.w, this.w);
+          // ctx.fillStyle = 'red';
+          // ctx.fill();
+          // ctx.closePath();
         } else {
           ctx.beginPath();
           ctx.rect(this.x, this.y, this.w, this.w);
-          ctx.fillStyle = 'gray';
+          ctx.fillStyle = 'rgb(177, 177, 177)';
           ctx.fill();
           ctx.closePath();
           if (this.neighborCount > 0) {
             ctx.fillStyle = "black";
             ctx.textAlign = "center";
-            ctx.fillText(this.neighborCount, this.x + this.w * 0.5, this.y + this.w - 6); 
+            ctx.font = '30px Montserrat'
+            ctx.fillText(this.neighborCount, this.x + this.w * 0.5, this.y + this.w*0.75); 
           }
         }
+      }else if(this.flagged){
+        ctx.beginPath();
+        ctx.rect(this.x, this.y, this.w, this.w);
+        ctx.fillStyle = 'rgb(177, 177, 177)';
+        ctx.fill();
+        ctx.closePath();
+        ctx.drawImage(flag, this.x, this.y,this.w *0.9, this.w*0.9);
       }
     }
 
@@ -63,88 +85,131 @@ $(function() {
         minesIndex.push(data.minesIndex[i]);
       }
       width = canvas.width/cols;
-
+      
       mineGame = new Mine(cols, rows, mines, minesIndex);
       game();
+
     })
 
 
     //login page
     //Sets the client's username
-    //enter chat page after gets username
-    const setUsername = () => {
-      username = cleanInput($usernameInput.val().trim());
 
+    $submit.click(function(){
+      console.log('clicked');
+      username = cleanInput($usernameInput.val().trim());
+      usericon = cleanInput($usericonInput.val().trim());
       // If the username is valid
       if (username) {
-        $loginPage.fadeOut();
-        $gamePage.show();
-        $loginPage.off('click');
-        $currentInput = $inputMessage.focus();
+
+        var newUser = {
+          name: username,
+          icon: usericon
+        };
 
         // Tell the server your username and your gameboard
-        socket.emit('add user', username);
-      }
-    }
-
-    socket.on('user joined', (players) => {
-      $('#userState').empty();
-      // currentScore = player.score;
-      // console.log(data.data);
-      for (var id in players) {
-        var player = players[id];
-        $('#userState').append($('<li>', {id:player.username} ).text(player.username+": " + player.score));
+        socket.emit('add user', newUser);
       }
     });
 
+    socket.on('icon failed', () => {
+      console.log('not found')
+      $loginPage.append( "<p>Please try another keyword</p>");
+    })
+
+    socket.on('user joined', (players) => {
+      $loginPage.fadeOut();
+      $gamePage.show();
+      $loginPage.off('click');
+      $('#userState').empty();
+      console.log(players)
+      for (var id in players) {
+        var player = players[id];
+        $('#userState').append($('<li>', {id:player.username} ).text(player.username+": " + player.score));
+        // flag.setAttribute('src', player.picture);
+      }
+
+    });
+
+    socket.on('userinfo', (data) => {
+      console.log(data);
+      flag.setAttribute('src', data.flag);
+    })
+
 
     function game(){
-      canvas.onclick = function reveal(event){
+
+      canvas.addEventListener('contextmenu', function(ev) { 
+        ev.preventDefault(); 
         var x = event.clientX;
         var y = event.clientY;
-        mineGame.leftMouse(x, y);
+        mineGame.rightMouse(x, y);
         var clicked = {
           x: x,
           y: y,
+          button: 2,
           score: currentScore 
-        }
+        };
+
         socket.emit('clicked', clicked);
+        return false; 
+      }, false);
+
+      canvas.onmousedown = function whichButton(event){
+        if(event.button == 0){
+          var x = event.clientX;
+          var y = event.clientY;
+          mineGame.leftMouse(x, y);
+          var clicked = {
+            x: x,
+            y: y,
+            button: 0,
+            score: currentScore 
+          }
+          socket.emit('clicked', clicked);
+        }
       }
   
       socket.on('newClick', (data) =>{
         var newX = data.x;
         var newY = data.y;
-        mineGame.leftMouse(newX, newY);
+        if(data.button == 0){
+          mineGame.leftMouse(newX, newY);
+        }else if(data.button == 2){
+          mineGame.rightMouse(newX, newY);
+        }
+        
         socket.on('updateScore', (players) => {
+          var arr = [];
           for (var id in players) {
             var player = players[id];
+            arr.push(player);
             var text = document.getElementById(player.username);
             text.innerHTML = player.username + ": " +player.score;
           }
+          console.log("here" + players);
+          if(mineGame.win()){
+            $gamePage.fadeOut();
+            $winPage.show();
+            $gamePage.off('click');
+            var scores = arr.sort(function(a, b){
+              return b.score - a.score;
+            });
+            console.log(scores);
+            $('#finish').text( 'Game over! ' + scores[0].username+' won!' );
+            // console.log(normal);
+            // var winner = players[i].username;
+            // console.log(winner);
+          }
         })
+
       })
 
     }
 
-    // Focus input when clicking anywhere on login page
-    $loginPage.click(() => {
-      $currentInput.focus();
-    });
-
     const cleanInput = (input) => {
       return $('<div/>').text(input).html();
     }
-
-    $window.keydown(event => {
-      // Auto-focus the current input when a key is typed
-      if (!(event.ctrlKey || event.metaKey || event.altKey)) {
-        $currentInput.focus();
-      }
-      // When the client hits ENTER on their keyboard
-      if (event.which === 13) {
-          setUsername();
-      }
-    });
 
     socket.on('state', function() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);

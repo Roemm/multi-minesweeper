@@ -3,6 +3,7 @@
   <head>
     <title>Minesweeper</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
   </head>
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
@@ -16,8 +17,12 @@
         <div class="form">
           <h3 class="title">What's your name?</h3>
           <input class="usernameInput" type="text" maxlength="14" />
+          <h3 class="title">What's your icon?</h3>
+          <input class="usericonInput" type="text" maxlength="14" /><br><br>
+          <input class="userinfo" type='submit' value='Start'>
         </div>
       </li>
+
 
       <li class="game page">
         <div>
@@ -26,6 +31,11 @@
           <ul id="userState"></ul>
         </div>
       </li>
+
+        <div class="win page">
+          <h3 class="title" id="finish"></h3>
+        </div>
+
     </ul>
 
   </body>
