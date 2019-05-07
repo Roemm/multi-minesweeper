@@ -16,4 +16,4 @@ After you've done all the installations, it is time to get the API key from Noun
 	secret: '_your secret here_'
 }
 
-Now, you should be able to run the program by typing **_node app.js_** in your terminal. Then, go to **_localhost:3000_** and start playing it!
+Now, you should be able to run the program by typing **_node server.js_** in your terminal. Then, go to **_localhost:3000_** and start playing it!
