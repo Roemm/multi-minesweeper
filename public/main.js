@@ -48,11 +48,6 @@ $(function() {
       if (this.revealed) {
         if (this.mine) {
           ctx.drawImage(bomb, this.x, this.y,this.w, this.w);
-          // ctx.beginPath();
-          // ctx.rect(this.x, this.y, this.w, this.w);
-          // ctx.fillStyle = 'red';
-          // ctx.fill();
-          // ctx.closePath();
         } else {
           ctx.beginPath();
           ctx.rect(this.x, this.y, this.w, this.w);
@@ -141,8 +136,9 @@ $(function() {
 
       canvas.addEventListener('contextmenu', function(ev) { 
         ev.preventDefault(); 
-        var x = event.clientX;
-        var y = event.clientY;
+        var rect = canvas.getBoundingClientRect();
+        var x = event.clientX - rect.left;
+        var y = event.clientY - rect.top;
         mineGame.rightMouse(x, y);
         var clicked = {
           x: x,
@@ -157,8 +153,9 @@ $(function() {
 
       canvas.onmousedown = function whichButton(event){
         if(event.button == 0){
-          var x = event.clientX;
-          var y = event.clientY;
+          var rect = canvas.getBoundingClientRect();
+          var x = event.clientX - rect.left;
+          var y = event.clientY - rect.top;
           mineGame.leftMouse(x, y);
           var clicked = {
             x: x,
@@ -187,7 +184,7 @@ $(function() {
             var text = document.getElementById(player.username);
             text.innerHTML = player.username + ": " +player.score;
           }
-          console.log("here" + players);
+          // console.log("here" + players);
           if(mineGame.win()){
             $gamePage.fadeOut();
             $winPage.show();
@@ -195,7 +192,7 @@ $(function() {
             var scores = arr.sort(function(a, b){
               return b.score - a.score;
             });
-            console.log(scores);
+            // console.log(scores);
             $('#finish').text( 'Game over! ' + scores[0].username+' won!' );
             // console.log(normal);
             // var winner = players[i].username;

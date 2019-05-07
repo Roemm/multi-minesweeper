@@ -33,9 +33,9 @@ var players= {};
 var usernum = 0;
 
 //generate mine every time start the program
-var cols = 10;
+var cols = 20;
 var rows = 10;
-var mines = 2;
+var mines = 10;
 
 options = [];
 var minesIndex = [];

@@ -99,11 +99,27 @@ font-weight: 100;
     display: none;
     background-color: #000;
 }
+
+.board{
+    width: 100%; 
+    text-align:center; 
+    margin: auto;
+}
+.game.page h3{
+    text-align: center; 
+}
 p{
     color:white;
+    text-align: center;  
 }
+#userState{
+    color:white;
+    text-align: center; 
+}
+
 canvas {
     border: 3px solid white;
+
 }
 
 .win.page {
