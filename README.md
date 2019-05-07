@@ -8,5 +8,12 @@ Unlike traditional minesweeper, this game is more of a competition between playe
 If every cell other than mines is revealed, game will be over and whoever has higher score will win.
 
 ## How to install
+To install this game and play it locally, first make sure you have node.js installed. You can install it from here: [Node.js](https://nodejs.org/en/). Then, navigate to your repository folder and type in **_npm init_** in the terminal to initialize. Then, you will need to install these npm packages: [express](https://www.npmjs.com/package/express), [socket.io](https://www.npmjs.com/package/socket.io), [body-parser](https://www.npmjs.com/package/body-parser), [oauth](https://www.npmjs.com/package/oauth). You can follow the instruction from those pages, or simply type **_npm install express socket.io body-parser oauth_** in the terminal.
 
+After you've done all the installations, it is time to get the API key from Noun Project. Please follow the instruction here [Noun Project Documentation](http://api.thenounproject.com/getting_started.html#creating-an-api-key) to get your key and secure. Once you have that, create a file called **_config.js_** in your folder and type in the following:
+>module.exports = {
+	key:'_your key here_',
+	secret: '_your secret here_'
+}
 
+Now, you should be able to run the program by typing **_node app.js_** in your terminal. Then, go to **_localhost:3000_** and start playing it!
