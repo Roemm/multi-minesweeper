@@ -19,6 +19,6 @@ After you've done all the installations, it is time to get the API key from Noun
 Now, you should be able to run the program by typing **_node server.js_** in your terminal. Then, go to **_localhost:3000_** and start playing it!
 
 ## Future development
-	>Right now, the flag is not drawn properly as I expected, so I will try to fix that so that players have their special icons to differentiate from others.
+- Right now, the flag is not drawn properly as I expected, so I will try to fix that so that players have their special icons to differentiate from others.
 	
-	>Also, right now, it requires users to enter the game page at the same time to make the game work properly, which can be annoying if it is to be developed on web. I will also try to fix that.
+- Also, right now, it requires users to enter the game page at the same time to make the game work properly, which can be annoying if it is to be developed on web. I will also try to fix that.
